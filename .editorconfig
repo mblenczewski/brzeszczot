@@ -1,0 +1,22 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+
+[*.{c,cpp,h,hpp,tpp}]
+indent_style = tab
+indent_size = 8
+
+[*.{sh}]
+indent_style = tab
+indent_size = 8
+
+[*.{css,html,js,jsx,ts,tsx}]
+indent_style = space
+indent_size = 2
+
+[*.{conf,json,md,txt}]
+indent_style = space
+indent_size = 2

@@ -1,0 +1,8 @@
+bin/
+lib/
+obj/
+
+*.bin
+*.log
+
+**/.*.swp
