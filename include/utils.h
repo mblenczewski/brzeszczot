@@ -3,9 +3,9 @@
 
 #include "common.h"
 
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
 extern "C" {
-#endif /* __CPLUSPLUS */
+#endif /* __cplusplus */
 
 struct str_view {
 	char *ptr;
@@ -142,8 +142,8 @@ mem_pool_alloc(struct mem_pool *self, u64 alignment, u64 size) {
 	return ptr;
 }
 
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
 };
-#endif /* __CPLUSPLUS */
+#endif /* __cplusplus */
 
 #endif /* UTILS_H */

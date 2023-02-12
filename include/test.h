@@ -3,9 +3,9 @@
 
 #include "common.h"
 
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
 extern "C" {
-#endif /* __CPLUSPLUS */
+#endif /* __cplusplus */
 
 #define TEST_PASS() return 1;
 #define TEST_FAIL() return 0;
@@ -33,8 +33,8 @@ if (!(cond)) { _TEST_ASSERT_IMPL(cond, msg); TEST_FAIL() }
 #define TEST_EXPECT(cond, msg) \
 if (!(cond)) { _TEST_ASSERT_IMPL(cond, msg); }
 
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
 };
-#endif /* __CPLUSPLUS */
+#endif /* __cplusplus */
 
 #endif /* TEST_H */

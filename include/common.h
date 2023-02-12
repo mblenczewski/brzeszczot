@@ -1,11 +1,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
 extern "C" {
-#endif /* __CPLUSPLUS */
+#endif /* __cplusplus */
 
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
 	#include <cassert>
 	#include <cerrno>
 	#include <cfloat>
@@ -119,8 +119,8 @@ do { \
 	#define dbglog(...)
 #endif
 
-#ifdef __CPLUSPLUS
+#ifdef __cplusplus
 };
-#endif /* __CPLUSPLUS */
+#endif /* __cplusplus */
 
 #endif /* COMMON_H */
