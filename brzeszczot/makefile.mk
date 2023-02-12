@@ -18,7 +18,8 @@ BRZESZCZOT_FLAGS	:= \
 			   $(BRZESZCZOT_CFLAGS) \
 			   $(LDFLAGS) -lriot
 
-BRZESZCZOT_SOURCES	:= brzeszczot/src/brzeszczot.c
+BRZESZCZOT_SOURCES	:= brzeszczot/src/brzeszczot.c \
+			   brzeszczot/src/argparse.c
 
 BRZESZCZOT_OBJECTS	:= $(BRZESZCZOT_SOURCES:%.c=$(OBJ)/%.c.o)
 BRZESZCZOT_OBJDEPS	:= $(BRZESZCZOT_OBJECTS:%.o=%.d)
