@@ -161,6 +161,12 @@ riot_bin_ctx_pushn_pair(struct riot_bin_ctx *self, u32 count, riot_bin_offptr_t 
 extern b32
 riot_bin_ctx_pushn_node(struct riot_bin_ctx *self, u32 count, riot_bin_offptr_t *out);
 
+extern b32
+riot_bin_read(struct riot_bin_ctx *ctx, struct mem_stream stream);
+
+extern b32
+riot_bin_write(struct riot_bin_ctx *ctx, struct mem_stream stream);
+
 #ifdef __cplusplus
 };
 #endif /* __cplusplus */
