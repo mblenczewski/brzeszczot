@@ -19,9 +19,9 @@ LIBRIOT_FLAGS	:= \
 		   $(LDFLAGS)
 
 LIBRIOT_SOURCES	:= libriot/src/libriot.c \
-		   libriot/src/utils.c \
-		   libriot/src/bin_reader.c \
-		   libriot/src/bin_writer.c
+		   libriot/src/inibin.c \
+		   libriot/src/inibin_reader.c \
+		   libriot/src/inibin_writer.c
 
 LIBRIOT_OBJECTS	:= $(LIBRIOT_SOURCES:%.c=$(OBJ)/%.c.o)
 LIBRIOT_OBJDEPS	:= $(LIBRIOT_OBJECTS:%.o=%.d)
