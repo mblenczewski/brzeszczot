@@ -101,7 +101,7 @@ mem_pool_init(struct mem_pool *self, u64 alignment, u64 capacity) {
 	assert(capacity % alignment == 0);
 
 #ifdef _WIN32
-	u8 *ptr = _aligned_malloc(alignment, capacity);
+	u8 *ptr = _aligned_malloc(capacity, alignment);
 #else
 	u8 *ptr = aligned_alloc(alignment, capacity);
 #endif
