@@ -54,6 +54,9 @@ riot_wad_read(struct riot_wad_ctx *ctx, struct mem_stream stream);
 extern b32
 riot_wad_write(struct riot_wad_ctx *ctx, struct mem_stream stream);
 
+extern void
+riot_wad_print(struct riot_wad_ctx *ctx, FILE *f);
+
 #ifdef __cplusplus
 };
 #endif /* __cplusplus */

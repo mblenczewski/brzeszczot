@@ -145,6 +145,9 @@ riot_inibin_read(struct riot_inibin_ctx *ctx, struct mem_stream stream);
 extern b32
 riot_inibin_write(struct riot_inibin_ctx *ctx, struct mem_stream stream);
 
+extern void
+riot_inibin_print(struct riot_inibin_ctx *ctx, FILE *f);
+
 #ifdef __cplusplus
 };
 #endif /* __cplusplus */
