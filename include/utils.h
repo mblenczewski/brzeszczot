@@ -94,20 +94,35 @@ mem_pool_resize(struct mem_pool *self, u64 capacity) {
 }
 
 static inline bool
-mem_pool_init(struct mem_pool *self, u64 capacity) {
+mem_pool_init(struct mem_pool *self, u64 alignment, u64 capacity) {
 	assert(self);
+	assert(alignment);
+	assert(alignment == 1 || alignment % 2 == 0);
+	assert(capacity % alignment == 0);
 
-	self->ptr = NULL;
-	self->cap = self->len = 0;
+#ifdef _WIN32
+	u8 *ptr = _aligned_malloc(alignment, capacity);
+#else
+	u8 *ptr = aligned_alloc(alignment, capacity);
+#endif
+	if (!ptr) return false;
 
-	return mem_pool_resize(self, capacity);
+	self->ptr = ptr;
+	self->cap = capacity;
+	self->len = 0;
+
+	return true;
 }
 
 static inline void
 mem_pool_free(struct mem_pool *self) {
 	assert(self);
 
+#ifdef _WIN32
+	_aligned_free(self->ptr);
+#else
 	free(self->ptr);
+#endif
 }
 
 static inline void
