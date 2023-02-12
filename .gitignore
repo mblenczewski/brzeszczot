@@ -2,8 +2,7 @@ bin/
 lib/
 obj/
 
-*.bin
-*.log
+assets/
 
 **/.*.swp
 
