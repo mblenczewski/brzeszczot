@@ -144,6 +144,7 @@ mem_pool_alloc(struct mem_pool *self, u64 alignment, u64 size) {
 	assert(self);
 	assert(alignment);
 	assert(alignment == 1 || alignment % 2 == 0);
+	assert(size % alignment == 0);
 
 	u64 alignment_off = alignment - 1;
 	u64 aligned_len = (self->len + alignment_off) & ~alignment_off;
