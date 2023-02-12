@@ -114,6 +114,9 @@ mem_pool_init(struct mem_pool *self, u64 alignment, u64 capacity) {
 	return true;
 }
 
+#define MEM_POOL_INIT(pool, type, capacity) \
+mem_pool_init((pool), alignof(type), (capacity) * sizeof(type))
+
 static inline void
 mem_pool_free(struct mem_pool *self) {
 	assert(self);
@@ -157,6 +160,9 @@ mem_pool_alloc(struct mem_pool *self, u64 alignment, u64 size) {
 
 	return ptr;
 }
+
+#define MEM_POOL_ALLOC(pool, type, count) \
+(type *)mem_pool_alloc((pool), alignof(type), (count) * sizeof(type))
 
 #ifdef __cplusplus
 };
