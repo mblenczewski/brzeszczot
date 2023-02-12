@@ -1,7 +1,114 @@
 libriot
-==============================================================================
+===============================================================================
 libriot is the support library to brzeszczot. It currently implements reading
-and writing of Riot's INIBIN format, documented below.
+and writing of Riot's WAD and INIBIN formats, documented below.
+
+libriot: Primitive types
+===============================================================================
+In the below format descriptions, the following primitive types are assumed:
++-----------+---------------+-------------------------------------------------+
+| Type Tag  | Size (bytes)  | Description                                     |
++-----------+---------------+-------------------------------------------------+
+| chr8      | 1 byte        | ASCII character                                 |
+| b8        | 1 byte        | Boolean value                                   |
+| f32       | 4 bytes       | 32-bit floating point value                     |
+| s8        | 1 byte        | Signed 8-bit integer                            |
+| s16       | 2 bytes       | Signed 16-bit integer                           |
+| s32       | 4 bytes       | Signed 32-bit integer                           |
+| s64       | 8 bytes       | Signed 64-bit integer                           |
+| u8        | 1 byte        | Unsigned 8-bit integer                          |
+| u16       | 2 bytes       | Unsigned 16-bit integer                         |
+| u32       | 4 bytes       | Unsigned 32-bit integer                         |
+| u64       | 8 bytes       | Unsigned 64-bit integer                         |
+| fnv1a_u32 | 4 bytes       | FNV1a hash value                                |
+| xxh64_u64 | 8 bytes       | XXH64 hash value                                |
++-----------+---------------+-------------------------------------------------+
+
+Arrays (fixed length contiguous sequences of elements) are represented by the
+following convention:
++-----------+-----------------------------------------------------------------+
+| Type Tag  | Description                                                     |
++-----------+-----------------------------------------------------------------+
+| T[const]  | Homogenous array of type T, with constant length `const`        |
+| T[Var]    | Homogenous array of type T, with indirect length given by `Var` |
++-----------+-----------------------------------------------------------------+
+
+Bitfields may also be declared by formats, and are represented by the following
+connvention:
++-----------+-----------------------------------------------------------------+
+| Type Tag  | Description                                                     |
++-----------+-----------------------------------------------------------------+
+| T[a:b]    | Bitfield across T's backing bits, spanning from bit a to bit b  |
++-----------+-----------------------------------------------------------------+
+
+Note that in addition to the above primitives, formats might define additional
+primitive or compound types unique to said format.
+
+libriot: WAD intro
+===============================================================================
+The WAD format (no relation to Doom's WAD) is used as an archive of INIBINs.
+My understanding of this format came from studying the excellent LeagueToolkit
+tool (https://github.com/LeagueToolkit/LeagueToolkit), without which this
+library wouldn't have been possible.
+
+libriot: WAD format
+===============================================================================
+Riot's WAD format has multiple versions, and is structured as follows:
++-----------------------------------------------------------------------------+
+| Header                                                                      |
+| +-------------------------------------------------------------------------+ |
+| | 'RW' Magic : chr[2]                                                     | |
+| | Major Version : u8                                                      | |
+| | Minor Version : u8                                                      | |
+| |                                                                         | |
+| | V2 Signature (if Major Version == 2)                                    | |
+| | +---------------------------------------------------------------------+ | |
+| | | ECDSA Length : u32                                                  | | |
+| | | ECDSA Signature : u8[80]                                            | | |
+| | | Checksum : u64                                                      | | |
+| | +---------------------------------------------------------------------+ | |
+| |                                                                         | |
+| | V3 Signature (if Major Version == 3)                                    | |
+| | +---------------------------------------------------------------------+ | |
+| | | ECDSA Signature : u8[256]                                           | | |
+| | | Checksum : u64                                                      | | |
+| | +---------------------------------------------------------------------+ | |
+| |                                                                         | |
+| | Table Of Contents (if Major Version <= 2)                               | |
+| | +---------------------------------------------------------------------+ | |
+| | | Start Offset : u16                                                  | | |
+| | | Entry Size : u16                                                    | | |
+| | +---------------------------------------------------------------------+ | |
+| +-------------------------------------------------------------------------+ |
+|                                                                             |
+| Entries                                                                     |
+| +-------------------------------------------------------------------------+ |
+| | Count : u32                                                             | |
+| | Chunks[Count]                                                           | |
+| | +---------------------------------------------------------------------+ | |
+| | | Path Hash : xxh64_u64                                               | | |
+| | | Data Offset : u32                                                   | | |
+| | | Compressed Size : u32                                               | | |
+| | | Decompressed Size : u32                                             | | |
+| | | Sub-Chunk Count : b8[0:3]                                           | | |
+| | | Compression : b8[4:7]                                               | | |
+| | | Duplicated : b8                                                     | | |
+| | | Start Sub-Chunk Index : u16                                         | | |
+| | | Checksum : u64 (if Major Version >= 2)                              | | |
+| | +---------------------------------------------------------------------+ | |
+| +-------------------------------------------------------------------------+ |
++-----------------------------------------------------------------------------+
+
+The compression used in a given WAD entry is one of the following enum values:
++-------+---------------------------------------------------------------------+
+| Value | Description                                                         |
++-------+---------------------------------------------------------------------+
+| 0     | No compression                                                      |
+| 1     | GZip compression                                                    |
+| 2     | Satellite chunk; the chunk data is a string file redirect           |
+| 3     | Zstd compression                                                    |
+| 4     | Zstd compression using sub-chunks                                   |
++-------+---------------------------------------------------------------------+
 
 libriot: INIBIN into
 ===============================================================================
@@ -65,26 +172,7 @@ Riot's INIBIN file format has multiple versions, and is structured as follows:
 | +-------------------------------------------------------------------------+ |
 +-----------------------------------------------------------------------------+
 
-In the above format description, the following primitive types are assumed:
-+-----------+---------------+-------------------------------------------------+
-| Type Tag  | Size (bytes)  | Description                                     |
-+-----------+---------------+-------------------------------------------------+
-| chr8      | 1 byte        | ASCII character                                 |
-| b8        | 1 byte        | Boolean value                                   |
-| f32       | 4 bytes       | 32-bit floating point value                     |
-| s8        | 1 byte        | Signed 8-bit integer                            |
-| s16       | 2 bytes       | Signed 16-bit integer                           |
-| s32       | 4 bytes       | Signed 32-bit integer                           |
-| s64       | 8 bytes       | Signed 64-bit integer                           |
-| u8        | 1 byte        | Unsigned 8-bit integer                          |
-| u16       | 2 bytes       | Unsigned 16-bit integer                         |
-| u32       | 4 bytes       | Unsigned 32-bit integer                         |
-| u64       | 8 bytes       | Unsigned 64-bit integer                         |
-| fnv1a_u32 | 4 bytes       | FNV1a hash value                                |
-| xxh64_u64 | 8 bytes       | XXH64 hash value                                |
-+-----------+---------------+-------------------------------------------------+
-
-In addition to the above primitives, Riot's INIBIN format declares the
+In addition to the default primitives, Riot's INIBIN format declares the
 following primitive types:
 +-----------+---------------+-------------------------------------------------+
 | Type Tag  | Size (bytes)  | Description                                     |
