@@ -19,6 +19,9 @@ LIBRIOT_FLAGS	:= \
 		   $(LDFLAGS)
 
 LIBRIOT_SOURCES	:= libriot/src/libriot.c \
+		   libriot/src/wad.c \
+		   libriot/src/wad_reader.c \
+		   libriot/src/wad_writer.c \
 		   libriot/src/inibin.c \
 		   libriot/src/inibin_reader.c \
 		   libriot/src/inibin_writer.c
