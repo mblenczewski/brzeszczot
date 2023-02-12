@@ -39,6 +39,7 @@ extern "C" {
 	#include <string.h>
 #endif
 
+typedef int8_t b8;
 typedef int32_t b32;
 
 typedef uint8_t u8;
