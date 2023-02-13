@@ -75,6 +75,33 @@ mem_stream_consume(struct mem_stream *self, void *buf, u64 len) {
 	return mem_stream_peek(self, 0, buf, len) && mem_stream_skip(self, len);
 }
 
+static inline bool
+mem_stream_resize(struct mem_stream *self, u64 capacity) {
+	assert(self);
+
+	u8 *ptr = realloc(self->ptr, capacity);
+	if (!ptr) return false;
+
+	self->ptr = ptr;
+	self->len = capacity;
+
+	return true;
+}
+
+static inline u64
+mem_stream_push(struct mem_stream *self, void *buf, u64 len) {
+	assert(self);
+	assert(buf);
+
+	if (self->len - self->cur < len && !mem_stream_resize(self, self->cur + len))
+		return 0;
+
+	memcpy(self->ptr + self->cur, buf, len);
+	self->cur += len;
+
+	return len;
+}
+
 struct mem_pool {
 	u8 *ptr;
 	u64 cap, len;

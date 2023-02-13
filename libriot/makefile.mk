@@ -19,6 +19,7 @@ LIBRIOT_FLAGS	:= \
 		   $(LDFLAGS)
 
 LIBRIOT_SOURCES	:= libriot/src/libriot.c \
+		   libriot/src/utils.c \
 		   libriot/src/wad.c \
 		   libriot/src/wad_reader.c \
 		   libriot/src/wad_writer.c \
