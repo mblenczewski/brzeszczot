@@ -81,10 +81,14 @@ struct mem_pool {
 };
 
 static inline bool
-mem_pool_resize(struct mem_pool *self, u64 capacity) {
+mem_pool_resize(struct mem_pool *self, u64 alignment, u64 capacity) {
 	assert(self);
 
+#ifdef _WIN32
+	u8 *ptr = _aligned_realloc(self->ptr, capacity, alignment);
+#else
 	u8 *ptr = realloc(self->ptr, capacity);
+#endif
 	if (!ptr) return false;
 
 	self->ptr = ptr;
@@ -136,10 +140,11 @@ mem_pool_reset(struct mem_pool *self) {
 }
 
 static inline bool
-mem_pool_prealloc(struct mem_pool *self, u64 size) {
+mem_pool_prealloc(struct mem_pool *self, u64 alignment, u64 size) {
 	assert(self);
 
-	return self->len + size <= self->cap || mem_pool_resize(self, self->len + size);
+	return self->len + size <= self->cap ||
+		mem_pool_resize(self, alignment, self->len + size);
 }
 
 static inline void *
@@ -152,7 +157,7 @@ mem_pool_alloc(struct mem_pool *self, u64 alignment, u64 size) {
 	u64 alignment_off = alignment - 1;
 	u64 aligned_len = (self->len + alignment_off) & ~alignment_off;
 
-	if (!mem_pool_prealloc(self, (aligned_len - self->len) + size))
+	if (!mem_pool_prealloc(self, alignment, (aligned_len - self->len) + size))
 		return NULL;
 
 	void *ptr = self->ptr + aligned_len;
