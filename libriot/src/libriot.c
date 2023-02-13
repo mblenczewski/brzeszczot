@@ -1,28 +1,16 @@
 #include "libriot.h"
 
-void
+extern inline void
 riot_intrusive_list_node_link(struct riot_intrusive_list_node *self,
 			      struct riot_intrusive_list_node *prev,
-			      struct riot_intrusive_list_node *next) {
-	assert(self);
-	assert(prev);
-	assert(next);
+			      struct riot_intrusive_list_node *next);
 
-	prev->next = RELPTR_ABS2REL(riot_relptr_t, prev, self);
-	self->prev = RELPTR_ABS2REL(riot_relptr_t, self, prev);
-	self->next = RELPTR_ABS2REL(riot_relptr_t, self, next);
-	next->prev = RELPTR_ABS2REL(riot_relptr_t, next, self);
-}
+extern inline void
+riot_intrusive_list_node_snip(struct riot_intrusive_list_node *self);
 
-void
-riot_intrusive_list_node_snip(struct riot_intrusive_list_node *self) {
-	assert(self);
+extern inline void
+riot_intrusive_list_init(struct riot_intrusive_list *self);
 
-	struct riot_intrusive_list_node *prev, *next;
-	prev = RELPTR_REL2ABS(struct riot_intrusive_list_node *, riot_relptr_t, self, self->prev);
-	next = RELPTR_REL2ABS(struct riot_intrusive_list_node *, riot_relptr_t, self, self->next);
-
-	prev->next = RELPTR_ABS2REL(riot_relptr_t, prev, next);
-	next->prev = RELPTR_ABS2REL(riot_relptr_t, next, prev);
-	self->prev = self->next = RELPTR_NULL;
-}
+extern inline void
+riot_intrusive_list_push(struct riot_intrusive_list *self,
+			 struct riot_intrusive_list_node *elem);
