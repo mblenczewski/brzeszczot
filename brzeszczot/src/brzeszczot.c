@@ -68,21 +68,21 @@ wad_dump(struct opts *opts) {
 		.cur = 0,
 	};
 
-	struct riot_wad_ctx wadctx;
-	if (!riot_wad_ctx_init(&wadctx)) {
+	struct riot_wad_ctx ctx;
+	if (!riot_wad_ctx_init(&ctx)) {
 		errlog("Failed to initialise WAD context");
 		free(filebuf);
 		return 1;
 	}
 
-	if (!riot_wad_read(&wadctx, in)) {
+	if (!riot_wad_read(&ctx, in)) {
 		errlog("Failed to read WAD file");
-		riot_wad_ctx_free(&wadctx);
+		riot_wad_ctx_free(&ctx);
 		free(filebuf);
 		return 1;
 	}
 
-	riot_wad_print(&wadctx, stdout);
+	riot_wad_print(&ctx, stdout);
 
 	struct mem_stream out = {
 		.ptr = filebuf,
@@ -90,14 +90,16 @@ wad_dump(struct opts *opts) {
 		.cur = 0,
 	};
 
-	if (!riot_wad_write(&wadctx, out)) {
+	void *wad_data_buf = filebuf + ctx.wad.data_start;
+	u64 wad_data_len = filelen - ctx.wad.data_start;
+	if (!riot_wad_write(&ctx, wad_data_buf, wad_data_len, out)) {
 		errlog("Failed to write WAD file");
-		riot_wad_ctx_free(&wadctx);
+		riot_wad_ctx_free(&ctx);
 		free(filebuf);
 		return 1;
 	}
 
-	riot_wad_ctx_free(&wadctx);
+	riot_wad_ctx_free(&ctx);
 
 	u64 written = write_file(opts->dst, filelen, filebuf);
 	if (!written || written < filelen) {
@@ -128,21 +130,21 @@ inibin_dump(struct opts *opts) {
 		.cur = 0,
 	};
 
-	struct riot_inibin_ctx inibinctx;
-	if (!riot_inibin_ctx_init(&inibinctx)) {
+	struct riot_inibin_ctx ctx;
+	if (!riot_inibin_ctx_init(&ctx)) {
 		errlog("Failed to initialise INIBIN context");
 		free(filebuf);
 		return 1;
 	}
 
-	if (!riot_inibin_read(&inibinctx, in)) {
+	if (!riot_inibin_read(&ctx, in)) {
 		errlog("Failed to read INIBIN file");
-		riot_inibin_ctx_free(&inibinctx);
+		riot_inibin_ctx_free(&ctx);
 		free(filebuf);
 		return 1;
 	}
 
-	riot_inibin_print(&inibinctx, stdout);
+	riot_inibin_print(&ctx, stdout);
 
 	struct mem_stream out = {
 		.ptr = filebuf,
@@ -150,14 +152,14 @@ inibin_dump(struct opts *opts) {
 		.cur = 0,
 	};
 
-	if (!riot_inibin_write(&inibinctx, out)) {
+	if (!riot_inibin_write(&ctx, out)) {
 		errlog("Failed to write INIBIN file");
-		riot_inibin_ctx_free(&inibinctx);
+		riot_inibin_ctx_free(&ctx);
 		free(filebuf);
 		return 1;
 	}
 
-	riot_inibin_ctx_free(&inibinctx);
+	riot_inibin_ctx_free(&ctx);
 
 	u64 written = write_file(opts->dst, filelen, filebuf);
 	if (!written || written < filelen) {
