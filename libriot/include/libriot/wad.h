@@ -25,17 +25,18 @@ struct riot_wad_chunk {
 	b8 duplicated;
 	u16 sub_chunk_count, sub_chunk_start;
 	u64 checksum;
-	struct riot_intrusive_list_node list;
 };
 
 struct riot_wad {
 	u8 major, minor;
-	riot_offptr_t root_chunk;
+	u32 chunk_count;
+	u32 data_start;
 };
 
 #define RIOT_WAD_CTX_CHUNK_POOL_SZ 4 * KiB
 
 struct riot_wad_ctx {
+	struct riot_wad wad;
 	struct mem_pool chunk_pool;
 };
 
